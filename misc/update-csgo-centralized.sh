@@ -37,7 +37,9 @@ STEAMCMD_DIR="/root/steamcmd"
 #   Single: "sples1/k4ryuu-cs2"
 #   Multiple: "sples1/k4ryuu-csgo ghcr.io/k4ryuu/csgo-egg"
 #   With commas: "sples1/k4ryuu-cs2,ghcr.io/k4ryuu/csgo-egg"
-SERVER_IMAGE="ghcr.io/1zc/steamrt3-pterodactyl:latest ghcr.io/1zc/steamrt3-pterodactyl"
+# 우리 egg 이미지를 미리 넣어둔다. 서버가 이미지를 갈아타는 순간 데몬이 바로 인식한다.
+# 빠뜨리면 새 서버가 vpk 없이 뜬다.
+SERVER_IMAGE="ghcr.io/cs2kr/csgo-egg:latest ghcr.io/cs2kr/csgo-egg ghcr.io/1zc/steamrt3-pterodactyl:latest ghcr.io/1zc/steamrt3-pterodactyl"
 
 # Optional: Enable automatic server restart after update (true/false)
 # Set to "false" if you want servers to sync on next manual restart

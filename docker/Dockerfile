@@ -1,7 +1,7 @@
 # Dockerfile with SteamRT3 — CS:GO(32비트 srcds) 용
 FROM        registry.gitlab.steamos.cloud/steamrt/sniper/platform:latest-container-runtime-depot
 LABEL       author="CS2.KR" \
-            maintainer="successyr@gmail.com" \
+            maintainer="contact@cs2.kr" \
             org.opencontainers.image.description="CS2.KR CS:GO egg image. MetaMod/SourceMod and post-EOL required plugins are installed on boot." \
             org.opencontainers.image.source="https://github.com/CS2KR/csgo-egg" \
             org.opencontainers.image.licenses="GPL-3.0" \

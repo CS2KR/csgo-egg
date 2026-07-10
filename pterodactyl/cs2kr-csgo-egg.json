@@ -10,7 +10,7 @@
     "description": "CS2.KR CS:GO(appid 740) 서버용 egg 입니다. 부팅마다 MetaMod:Source 와 SourceMod 를 버전 고정으로 설치하고, 서비스 종료 이후 필수인 플러그인 3종(NoLobbyReservation, MapCrashFixer, FixHintColorMessages)을 자동으로 깝니다. 로그·덤프 정리는 egg/configs/cleanup.json 규칙을 따릅니다. 게임 파일은 csgo-vpk-daemon 이 넣어줍니다.",
     "features": [],
     "docker_images": {
-        "CS2.KR CS:GO Egg": "ghcr.io/cs2kr/csgo-egg:latest"
+        "CS2.KR CSGO Egg": "ghcr.io/cs2kr/csgo-egg:latest"
     },
     "file_denylist": [],
     "startup": "./srcds_run -game csgo -console -port {{SERVER_PORT}} +ip {{SERVER_IP}} -tickrate {{SERVER_TICKRATE}} +map {{SRCDS_MAP}} +maxplayers {{SRCDS_MAXPLAYERS}} -maxplayers_override {{SRCDS_MAXPLAYERS}} -norestart +sv_setsteamaccount {{STEAM_ACC}} +exec server.cfg",

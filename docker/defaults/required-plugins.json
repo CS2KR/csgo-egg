@@ -1,0 +1,30 @@
+{
+  "_comment": "CS:GO 서비스 종료 이후 없으면 안 되는 플러그인. 전부 태그/커밋으로 고정한다.",
+  "version": 1,
+  "plugins": [
+    {
+      "name": "nolobbyreservation",
+      "why": "2024-02 csgo_legacy 이후 로비 예약 문제",
+      "url": "https://github.com/vanz666/NoLobbyReservation/releases/download/0.0.2/nolobbyreservation.zip",
+      "type": "zip",
+      "sha256": "1d96176c98c817f38c57dd02bc583c78b4a999ce7cd8b213a0b8cfc39fdfefb0",
+      "marker": "addons/sourcemod/plugins/nolobbyreservation.smx"
+    },
+    {
+      "name": "mapcrashfixer",
+      "why": "맵 전환 중 클라이언트 크래시",
+      "url": "https://raw.githubusercontent.com/ismail0234/Benson-Map-Crash-Fixer/v1.0.7/mapcrashfixer.smx",
+      "type": "smx",
+      "sha256": "aa4361e7ff32b7daa0c75df19eab004428e595fdfd0236c82d160953479eac25",
+      "marker": "addons/sourcemod/plugins/mapcrashfixer.smx"
+    },
+    {
+      "name": "FixHintColorMessages",
+      "why": "speedpanel/hint 메시지 색 깨짐",
+      "url": "https://raw.githubusercontent.com/Franc1sco/FixHintColorMessages/ffe767e655629f632ccd0644b5c0d22c6e6e0cf8/FixHintColorMessages.smx",
+      "type": "smx",
+      "sha256": "5f6e3955a9cbdfd2fe5248170fec4908de6d8d1f71a54c2d20167d2afdcfb52b",
+      "marker": "addons/sourcemod/plugins/FixHintColorMessages.smx"
+    }
+  ]
+}

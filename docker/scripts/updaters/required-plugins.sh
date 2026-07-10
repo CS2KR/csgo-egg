@@ -22,20 +22,20 @@ install_required_plugins() {
         marker=$(jq -r ".plugins[$i].marker" "$catalog")
 
         if [ -f "$dst/$marker" ]; then
-            echo "  skip    $name (이미 있음)"
+            echo "  건너뜀  $name (이미 있음)"
             continue
         fi
 
         local file="$tmp/$(basename "$url")"
         if ! curl -fsSL "$url" -o "$file"; then
-            echo "  FAIL    $name (다운로드 실패)" >&2
+            echo "  실패    $name (다운로드 실패)" >&2
             return 1
         fi
 
         local got
         got=$(sha256sum "$file" | cut -d' ' -f1)
         if [ "$got" != "$sha" ]; then
-            echo "  FAIL    $name (sha256 불일치)" >&2
+            echo "  실패    $name (sha256 불일치)" >&2
             echo "          기대 $sha" >&2
             echo "          실제 $got" >&2
             rm -f "$file"
@@ -53,12 +53,12 @@ install_required_plugins() {
                 cp -rn "$tmp/${name}_x/addons/." "$dst/addons/" 2>/dev/null || true
                 ;;
             *)
-                echo "  FAIL    $name (알 수 없는 type: $type)" >&2
+                echo "  실패    $name (알 수 없는 type: $type)" >&2
                 return 1
                 ;;
         esac
 
-        echo "  install $name"
+        echo "  설치    $name"
     done
     return 0
 }

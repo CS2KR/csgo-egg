@@ -134,23 +134,24 @@ log_message() {
         message="$(mask_secrets "$message")"
     fi
 
-    # Enterprise-style table output:  PREFIX | LEVEL | message
-    # Level tag padded to 5 chars via printf %-5s — aligns columns across levels.
+    # 출력 형태:  PREFIX | 레벨 | 메시지
+    # 한글은 바이트 수(3)와 표시 폭(2)이 달라 printf 의 %-5s 로는 정렬이 깨진다.
+    # 그래서 태그에 공백을 직접 넣어 표시 폭 6으로 맞추고 %s 로 찍는다.
     local level_tag level_color
     case "$type" in
-        info)     level_tag="INFO";  level_color="$CYAN" ;;
-        success)  level_tag="OK";    level_color="$GREEN" ;;
-        warning)  level_tag="WARN";  level_color="$YELLOW" ;;
-        error)    level_tag="ERROR"; level_color="$RED" ;;
-        debug)    level_tag="DEBUG"; level_color="$GRAY" ;;
-        running)  level_tag="RUN";   level_color="$YELLOW" ;;
-        *)        level_tag="INFO";  level_color="$WHITE" ;;
+        info)     level_tag="정보  "; level_color="$CYAN" ;;
+        success)  level_tag="완료  "; level_color="$GREEN" ;;
+        warning)  level_tag="경고  "; level_color="$YELLOW" ;;
+        error)    level_tag="오류  "; level_color="$RED" ;;
+        debug)    level_tag="디버그"; level_color="$GRAY" ;;
+        running)  level_tag="실행  "; level_color="$YELLOW" ;;
+        *)        level_tag="정보  "; level_color="$WHITE" ;;
     esac
 
     local sep
     sep=$(printf '%b|%b' "$GRAY" "$NC")
 
-    printf "%b%s%b %s %b%-5s%b %s %b%s%b\n" \
+    printf "%b%s%b %s %b%s%b %s %b%s%b\n" \
         "$RED" "$PREFIX_TEXT" "$NC" \
         "$sep" \
         "$level_color" "$level_tag" "$NC" \
@@ -180,7 +181,7 @@ _log_code_common() {
     for hint in "$@"; do
         log_message "  → $hint" "$severity"
     done
-    log_message "  → Docs: ${ERROR_DOCS_URL}#${anchor}" "$severity"
+    log_message "  → 문서: ${ERROR_DOCS_URL}#${anchor}" "$severity"
 }
 
 log_error_code() { _log_code_common "error" "$@"; }
@@ -193,15 +194,15 @@ handle_error() {
 
     case $exit_code in
         127)
-            log_message "Command not found: $last_command" "error"
-            log_message "Exit code: 127" "error"
+            log_message "명령을 찾을 수 없습니다: $last_command" "error"
+            log_message "종료 코드: 127" "error"
             ;;
         0)
             return 0
             ;;
         *)
-            log_message "Error on line $line_number: $last_command" "error"
-            log_message "Exit code: $exit_code" "error"
+            log_message "${line_number}번 줄에서 오류: $last_command" "error"
+            log_message "종료 코드: $exit_code" "error"
             ;;
     esac
 

@@ -17,7 +17,7 @@ check_filesystem() {
     # Get filesystem info safely
     local fs_info
     if ! fs_info=$(df -k "$dir" 2>/dev/null | tail -n 1); then
-        log_message "Failed to get filesystem information for $dir" "error"
+        log_message "파일시스템 정보를 읽지 못했습니다: $dir" "error"
         return 1
     fi
 
@@ -25,12 +25,12 @@ check_filesystem() {
     local available
     available=$(echo "$fs_info" | awk '{print $4}')
     if [[ ! "$available" =~ ^[0-9]+$ ]]; then
-        log_message "Invalid filesystem information received" "error"
+        log_message "파일시스템 정보가 올바르지 않습니다" "error"
         return 1
     fi
 
     if [ "$available" -lt "$required_space" ]; then
-        log_message "Low disk space warning: Less than 1GB available" "warning"
+        log_message "디스크 여유 공간이 1GB 미만입니다" "warning"
     fi
 
     return 0
@@ -59,14 +59,14 @@ cleanup() {
     local config_file="${EGG_CONFIGS_DIR:-/home/container/egg/configs}/cleanup.json"
 
     if [ ! -f "$config_file" ]; then
-        log_message "Cleanup config missing at $config_file" "error"
+        log_message "정리 설정 파일이 없습니다: $config_file" "error"
         return 1
     fi
 
     local rule_count
     rule_count=$(jq '.rules | length // 0' "$config_file" 2>/dev/null)
     if [ -z "$rule_count" ] || [ "$rule_count" -eq 0 ]; then
-        log_message "No cleanup rules defined in cleanup.json" "debug"
+        log_message "cleanup.json 에 정리 규칙이 없습니다" "debug"
         return 0
     fi
 
@@ -95,7 +95,7 @@ cleanup() {
             stats[$category]=$((${stats[$category]:-0} + 1))
             ((deleted_count++))
         else
-            log_message "Failed to delete: $file" "error"
+            log_message "삭제하지 못했습니다: $file" "error"
         fi
     }
 
@@ -160,11 +160,11 @@ cleanup() {
     duration=$((end_time - start_time))
 
     if ((deleted_count > 0)); then
-        log_message "Cleaned up $deleted_count file(s), freed $(format_size "$total_size") in ${duration}s" "success"
+        log_message "파일 ${deleted_count}개 정리, $(format_size "$total_size") 확보 (${duration}초)" "success"
         local category
         for category in "${!stats[@]}"; do
             if ((stats[$category] > 0)); then
-                log_message "  ${category}: ${stats[$category]} file(s)" "debug"
+                log_message "  ${category}: ${stats[$category]}개" "debug"
             fi
         done
     fi

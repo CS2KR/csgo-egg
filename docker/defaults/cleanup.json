@@ -1,0 +1,38 @@
+{
+  "_comment": "CS:GO 서버의 디스크를 갉아먹는 파일들을 나이 기준으로 지우는 규칙",
+  "version": 1,
+  "rules": [
+    {
+      "name": "sm_error_logs",
+      "enabled": true,
+      "hours": 168,
+      "recursive": false,
+      "directories": ["./csgo/addons/sourcemod/logs"],
+      "patterns": ["errors_*.log"]
+    },
+    {
+      "name": "sm_logs",
+      "enabled": true,
+      "hours": 168,
+      "recursive": false,
+      "directories": ["./csgo/addons/sourcemod/logs"],
+      "patterns": ["L*.log"]
+    },
+    {
+      "name": "demos",
+      "enabled": true,
+      "hours": 168,
+      "recursive": false,
+      "directories": ["./csgo"],
+      "patterns": ["*.dem"]
+    },
+    {
+      "name": "core_dumps",
+      "enabled": true,
+      "hours": 0,
+      "recursive": false,
+      "directories": ["."],
+      "patterns": ["core", "core.[0-9]*"]
+    }
+  ]
+}

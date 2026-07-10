@@ -1,0 +1,54 @@
+name: Build and push image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docker/**"
+      - ".github/workflows/build-image.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: build-image
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Shell syntax check
+        run: |
+          for f in docker/entrypoint.sh docker/scripts/*.sh docker/scripts/updaters/*.sh docker/utils/*.sh misc/*.sh; do
+            bash -n "$f" || exit 1
+          done
+
+      - name: JSON syntax check
+        run: |
+          for f in docker/defaults/*.json pterodactyl/*.json; do
+            python3 -c "import json,sys; json.load(open(sys.argv[1]))" "$f" || exit 1
+          done
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/build-push-action@v6
+        with:
+          context: ./docker
+          file: ./docker/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/cs2kr/csgo-egg:latest
+            ghcr.io/cs2kr/csgo-egg:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

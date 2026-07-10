@@ -1,0 +1,152 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": "https://raw.githubusercontent.com/CS2KR/csgo-egg/main/pterodactyl/cs2kr-csgo-egg.json"
+    },
+    "exported_at": "2026-07-10T12:00:00+00:00",
+    "name": "CS2.KR CS:GO Egg",
+    "author": "successyr@gmail.com",
+    "description": "CS2.KR CS:GO(appid 740) 서버용 egg 입니다. 부팅마다 MetaMod:Source 와 SourceMod 를 버전 고정으로 설치하고, 서비스 종료 이후 필수인 플러그인 3종(NoLobbyReservation, MapCrashFixer, FixHintColorMessages)을 자동으로 깝니다. 로그·덤프 정리는 egg/configs/cleanup.json 규칙을 따릅니다. 게임 파일은 csgo-vpk-daemon 이 넣어줍니다.",
+    "features": [],
+    "docker_images": {
+        "CS2.KR CS:GO Egg": "ghcr.io/cs2kr/csgo-egg:latest"
+    },
+    "file_denylist": [],
+    "startup": "./srcds_run -game csgo -console -port {{SERVER_PORT}} +ip {{SERVER_IP}} -tickrate {{SERVER_TICKRATE}} +map {{SRCDS_MAP}} +maxplayers {{SRCDS_MAXPLAYERS}} -maxplayers_override {{SRCDS_MAXPLAYERS}} -norestart +sv_setsteamaccount {{STEAM_ACC}} +exec server.cfg",
+    "config": {
+        "files": "{}",
+        "startup": "{\n    \"done\": \"Server is hibernating\"\n}",
+        "logs": "{}",
+        "stop": "quit"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!/bin/bash\n# 게임 파일은 csgo-vpk-daemon 이 컨테이너 기동 시 넣어준다.\n# 설치 단계에서는 디렉터리만 잡아둔다.\nmkdir -p /mnt/server/csgo/addons/sourcemod/plugins\nmkdir -p /mnt/server/egg/configs\necho '설치 완료. 게임 파일은 첫 기동 때 중앙 데몬이 넣습니다.'\n",
+            "container": "debian:bookworm-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Map",
+            "description": "첫 기동 시 로드할 맵입니다.",
+            "env_variable": "SRCDS_MAP",
+            "default_value": "de_dust2",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|alpha_dash",
+            "field_type": "text"
+        },
+        {
+            "name": "Tickrate",
+            "description": "서버 틱레이트입니다. KZ 는 128 을 씁니다.",
+            "env_variable": "SERVER_TICKRATE",
+            "default_value": "128",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|numeric",
+            "field_type": "text"
+        },
+        {
+            "name": "Max Players",
+            "description": "최대 접속 인원입니다.",
+            "env_variable": "SRCDS_MAXPLAYERS",
+            "default_value": "32",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|numeric",
+            "field_type": "text"
+        },
+        {
+            "name": "Steam Account Token (GSLT)",
+            "description": "https://steamcommunity.com/dev/managegameservers 에서 App ID 730 으로 발급합니다.",
+            "env_variable": "STEAM_ACC",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:64",
+            "field_type": "text"
+        },
+        {
+            "name": "SourceMod 브랜치",
+            "description": "AlliedModders 에는 stable 별칭 URL 이 없습니다. 브랜치 번호를 씁니다. 현재 stable 은 1.12 입니다.",
+            "env_variable": "SM_BRANCH",
+            "default_value": "1.12",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:8",
+            "field_type": "text"
+        },
+        {
+            "name": "SourceMod 고정 버전",
+            "description": "예: 1.12.0-git7239. 비워두면 브랜치의 최신을 따라갑니다. 운영에서는 고정을 권합니다.",
+            "env_variable": "SM_VERSION",
+            "default_value": "1.12.0-git7239",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:32",
+            "field_type": "text"
+        },
+        {
+            "name": "MetaMod 브랜치",
+            "description": "현재 stable 은 1.12 입니다. 1.13 브랜치는 존재하지 않습니다.",
+            "env_variable": "MM_BRANCH",
+            "default_value": "1.12",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:8",
+            "field_type": "text"
+        },
+        {
+            "name": "MetaMod 고정 버전",
+            "description": "예: 1.12.0-git1224. 비워두면 브랜치의 최신을 따라갑니다.",
+            "env_variable": "MM_VERSION",
+            "default_value": "1.12.0-git1224",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "nullable|string|max:32",
+            "field_type": "text"
+        },
+        {
+            "name": "MetaMod/SourceMod 자동 설치",
+            "description": "1 이면 부팅마다 설치·갱신합니다. bin/extensions/gamedata/include 만 덮어쓰고 configs 와 translations 는 없을 때만 놓습니다.",
+            "env_variable": "MOD_AUTO_INSTALL",
+            "default_value": "1",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "필수 플러그인 자동 설치",
+            "description": "1 이면 egg/configs/required-plugins.json 대로 설치합니다. 이미 있으면 건너뜁니다.",
+            "env_variable": "REQUIRED_PLUGINS_ENABLED",
+            "default_value": "1",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "디스크 정리",
+            "description": "1 이면 부팅마다 egg/configs/cleanup.json 규칙으로 오래된 로그·덤프를 지웁니다.",
+            "env_variable": "CLEANUP_ENABLED",
+            "default_value": "1",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean",
+            "field_type": "text"
+        },
+        {
+            "name": "중앙 파일 대기 시간(초)",
+            "description": "csgo-vpk-daemon 이 게임 파일을 넣을 때까지 기다리는 시간입니다.",
+            "env_variable": "DAEMON_WAIT_SECONDS",
+            "default_value": "15",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|numeric",
+            "field_type": "text"
+        }
+    ]
+}

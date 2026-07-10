@@ -34,19 +34,39 @@ ok "의존성 확인"
 
 # ── 2. 스크립트 배치 ─────────────────────────────────────────────────────────
 # 저장소 안에서 실행했으면 그 파일을, 아니면 GitHub 에서 받는다.
-SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/${SCRIPT_NAME}"
+#
+# `curl ... | sudo bash` 로 실행하면 BASH_SOURCE 가 비어 있다.
+# set -u 아래에서는 그대로 참조하면 unbound variable 로 죽는다. :- 로 받아야 한다.
+SRC=""
+if [ -n "${BASH_SOURCE[0]:-}" ]; then
+    SRC="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/${SCRIPT_NAME}"
+fi
 mkdir -p "${REPO_DIR}/misc"
 
-if [ -f "$SRC" ] && [ "$SRC" != "${REPO_DIR}/misc/${SCRIPT_NAME}" ]; then
+if [ -n "$SRC" ] && [ -f "$SRC" ] && [ "$SRC" != "${REPO_DIR}/misc/${SCRIPT_NAME}" ]; then
+    # 저장소를 clone 해 그 안에서 실행한 경우
     install -o root -g root -m 755 "$SRC" "${REPO_DIR}/misc/${SCRIPT_NAME}"
     ok "스크립트 배치: ${REPO_DIR}/misc/${SCRIPT_NAME}"
-elif [ ! -f "${REPO_DIR}/misc/${SCRIPT_NAME}" ]; then
-    curl -fsSL "https://raw.githubusercontent.com/CS2KR/csgo-egg/main/misc/${SCRIPT_NAME}" \
-        -o "${REPO_DIR}/misc/${SCRIPT_NAME}" || die "스크립트를 내려받지 못했습니다"
-    chmod 755 "${REPO_DIR}/misc/${SCRIPT_NAME}"
-    ok "스크립트 내려받음"
 else
-    ok "스크립트가 이미 있습니다"
+    # curl | bash 로 실행한 경우. 항상 최신본을 받아 갱신한다.
+    tmp="$(mktemp)"
+    trap 'rm -f "$tmp"' EXIT
+    curl -fsSL "https://raw.githubusercontent.com/CS2KR/csgo-egg/main/misc/${SCRIPT_NAME}" \
+        -o "$tmp" || die "스크립트를 내려받지 못했습니다"
+    bash -n "$tmp" || die "내려받은 스크립트에 문법 오류가 있습니다"
+
+    if [ -f "${REPO_DIR}/misc/${SCRIPT_NAME}" ] && cmp -s "$tmp" "${REPO_DIR}/misc/${SCRIPT_NAME}"; then
+        ok "스크립트가 이미 최신입니다"
+    else
+        # 스크립트 상단 CONFIG 블록은 운영자가 고치는 곳이다. 덮기 전에 남긴다.
+        if [ -f "${REPO_DIR}/misc/${SCRIPT_NAME}" ]; then
+            cp -a "${REPO_DIR}/misc/${SCRIPT_NAME}" \
+                  "${REPO_DIR}/misc/${SCRIPT_NAME}.bak-$(date +%Y%m%d%H%M%S)"
+            warn "기존 스크립트를 백업했습니다. CONFIG 를 고쳤다면 옮겨 적으십시오"
+        fi
+        install -o root -g root -m 755 "$tmp" "${REPO_DIR}/misc/${SCRIPT_NAME}"
+        ok "스크립트 갱신됨"
+    fi
 fi
 
 bash -n "${REPO_DIR}/misc/${SCRIPT_NAME}" || die "스크립트 문법 오류"

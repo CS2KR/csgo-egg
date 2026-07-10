@@ -110,10 +110,23 @@ rsync 는 어차피 `csgo/addons/`, `csgo/cfg/`, `gameinfo.txt`, `mapcycle.txt`,
 
 wings 노드(게임 서버가 실제로 도는 호스트)에서 실행합니다. 패널 호스트가 아닙니다.
 
+**한 줄로 설치**
+
 ```bash
-git clone https://github.com/CS2KR/csgo-egg /opt/cs2kr/csgo-egg
+curl -fsSL https://raw.githubusercontent.com/CS2KR/csgo-egg/main/misc/install-csgo-update.sh | sudo bash
+```
+
+같은 명령으로 **갱신**도 됩니다. 최신 스크립트를 받아 다르면 교체하고, 같으면 아무것도 하지 않습니다.
+교체할 때는 기존 스크립트를 `.bak-<timestamp>` 로 남깁니다 — CONFIG 블록을 고쳤다면 옮겨 적으십시오.
+
+**저장소를 두고 쓰려면**
+
+```bash
+sudo git clone https://github.com/CS2KR/csgo-egg /opt/cs2kr/csgo-egg
 sudo bash /opt/cs2kr/csgo-egg/misc/install-csgo-update.sh
 ```
+
+이 경우 `git pull` 로 갱신하고 설치 스크립트를 다시 돌리면 됩니다.
 
 `install-csgo-update.sh` 가 하는 일입니다. **여러 번 돌려도 안전합니다.**
 

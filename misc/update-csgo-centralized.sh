@@ -96,7 +96,8 @@ ORIGINAL_ARGS=("$@")
 # ============================================================================
 
 # Self-update configuration (internal)
-GITHUB_REPO="K4ryuu/CS2-Egg"
+# 상류(K4ryuu/CS2-Egg)에는 CS2 판만 있고 CSGO 판이 없다 — 그 URL 은 404 였다.
+GITHUB_REPO="CS2KR/csgo-egg"
 GITHUB_BRANCH="main"
 SCRIPT_FILENAME="update-csgo-centralized.sh"
 REMOTE_SCRIPT_URL="https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/misc/${SCRIPT_FILENAME}"
